@@ -4,7 +4,7 @@
 
 <template>
   <div class="wrapper">
-    <h1>Kjells väderapp</h1>
+    <h1>KJELLS VÄDERAPP</h1>
     <p class="center">(H3mlin Version)</p>
     <p class="center">När Kjell ger väder lyssnar man</p>
     <RouterView />
