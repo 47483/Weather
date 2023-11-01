@@ -1,115 +1,29 @@
 <script setup>
     import {onMounted, ref} from 'vue';
     import WeatherCard from '../components/WeatherCard.vue';
+    import weatherCodes from '../assets/weatherCodes.js'
 
-    const weatherAPI = ref('https://api.open-meteo.com/v1/forecast?latitude=60.1786&longitude=19.9024&current=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant&windspeed_unit=ms&timezone=auto');
     const weatherData = ref([]);
 
-    let WMOCodes = [
-        "Molnfritt",
-        "Avtagande Molnigt",
-        "Stabilt",
-        "Ökande Molnighet",
-        "Försämrad Sikt, Rök",
-        "Disigt",
-        "Dammigt",
-        "Dammiga Vindar",
-        "Dammiga Virvelvindar",
-        "Damm/Sandstorm",
-        "Dimmigt",
-        "Lätt Dimma",
-        "Dimma",
-        "Blixtoväder",
-        "Ytterst Distant Regn",
-        "Distant Regn",
-        "Närliggande Regn",
-        "Blixtstorm",
-        "Näraliggande Stormar",
-        "Orkaner",
-        "Duggregn",
-        "Regnigt",
-        "Snöfall",
-        "Hagel",
-        "Kallt Regn",
-        "Regnskurar",
-        "Snö Blandat Regn",
-        "Hagel Blandat Regn",
-        "Snöyra",
-        "Åskstorm",
-        "Avtagande Damm/Sandstorm",
-        "Damm/Sandstorm",
-        "Ökande Damm/Sandstorm",
-        "Avtagande Grov Damm/Sandstorm",
-        "Grov Damm/Sandstorm",
-        "Ökande Grov Damm/Sandstorm",
-        "Lätt Snöyra",
-        "Snöyra",
-        "Grov Snöyra",
-        "Kraftig Snöyra",
-        "Distant Snödimma",
-        "Snödimma",
-        "Avtagande Snödimma",
-        "Avtagande Tjock Snödimma",
-        "Snödimma",
-        "Tjock Snödimma",
-        "Ökande Snödimma",
-        "Ökande Tjock Snödimma",
-        "Dimma Och Rimfrost",
-        "Tjock Dimma Och Rimfrost",
-        "Duggregnsskurar",
-        "Duggregn",
-        "Lätta Regnskurar",
-        "Lätt Regn",
-        "Regnskurar",
-        "Regnigt",
-        "Kallt Duggregn",
-        "Kallt Regn",
-        "Lätt Regnigt",
-        "Regnigt",
-        "Lätta Regnskurar",
-        "Lätt Regn",
-        "Regnskurar",
-        "Regn",
-        "Stora Regnskurar",
-        "Mycket Regn",
-        "Kallt Duggregn",
-        "Kallt Regn",
-        "Lätt Regn Och Snöfall",
-        "Regn Och Snöfall",
-        "Risk För Lätt Snöfall",
-        "Lätt Snöfall",
-        "Risk För Snöfall",
-        "SnöFall",
-        "Risk För Stort Snöfall",
-        "Stort Snöfall",
-        "Snödimma",
-        "Grov Snödimma",
-        "Grövre Snödimma",
-        "Iskornslandskap",
-        "Lätta Regnduschar",
-        "Regndushar",
-        "Skyfall",
-        "Lätta Regn Och Snöduschar",
-        "Regn Och Snöduschar",
-        "Lätt Snö Och Regnoväder",
-        "Snö Och Regnoväder",
-        "Lätt Snöoväder",
-        "Snöoväder",
-        "Lätt Snöhagel",
-        "Snöhagel",
-        "Lätt Regnoväder",
-        "Regnoväder",
-        "Lätt Regn Och Snöoväder",
-        "Regn Och Snöoväder",
-        "Mindre Åskoväder",
-        "Mindre Åskoväder Med Hagel",
-        "Åskoväder",
-        "Åskoväder Med Damm/Sandstorm",
-        "Åskoväder Med Hagel"
-    ]
+    const weekday = ["Söndag","Måndag","Tisdag","Onsdag","Torsdag","Fredag","Lördag"];
+    const coordinates = {
+        'lat': 60.1786,
+        'long': 19.9024
+    }
+    let weatherAPI = `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.lat}&longitude=${coordinates.long}&current=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant&windspeed_unit=ms&timezone=auto`;
 
-    onMounted(function() {
-        fetch(weatherAPI.value)
+    function Weather(code) {
+        let weather = weatherCodes.find((item) => item.code == code);
+        if (weather) {
+            return weather.text;
+        }
+
+        return "Okänt väder";
+    }
+
+    function FetchAPI() {
+        console.log(`Fetching ${weatherAPI}`);
+        fetch(weatherAPI)
 
         .then(response => {
             if (response.status == 200) {
@@ -122,10 +36,13 @@
                 throw "Ingen data returnerades";
             }
 
+            weatherData.value = [];
+
             for (let day in data.daily.time) {
+                let date = new Date(data.daily.time[day]);
                 let weather = {
-                    'date':data.daily.time[day],
-                    'code':WMOCodes[data.daily.weathercode[day]],
+                    'date':`${weekday[date.getDay()]} ${date.getDate()}.${date.getMonth()+1}`,
+                    'code':Weather(data.daily.weathercode[day]),
                     'tempmax':data.daily.temperature_2m_max[day],
                     'tempmin':data.daily.temperature_2m_min[day],
                     'winddeg':data.daily.winddirection_10m_dominant[day],
@@ -135,26 +52,86 @@
                 weatherData.value.push(weather);
             }
         })
+    }
+
+    function UpdateLat() {
+        let value = document.getElementById("lat").value;
+        let prevLat = coordinates.lat;
+
+        if (value != "") {
+            coordinates.lat = parseFloat(value);
+
+        } else {
+            coordinates.lat = 60.1786;
+        }
+
+        if (prevLat != coordinates.lat) {
+            weatherAPI = `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.lat}&longitude=${coordinates.long}&current=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant&windspeed_unit=ms&timezone=auto`;
+            FetchAPI();
+        }
+    }
+
+    function UpdateLong() {
+        let value = document.getElementById("long").value;
+        let prevLong = coordinates.long;
+
+        if (value != "") {
+            coordinates.long = parseFloat(value);
+
+        } else {
+            coordinates.long = 19.9024;
+        }
+
+        if (prevLong != coordinates.long) {
+            weatherAPI = `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.lat}&longitude=${coordinates.long}&current=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant&windspeed_unit=ms&timezone=auto`;
+            FetchAPI();
+        }
+    }
+
+    onMounted(function() {
+        FetchAPI();
     })
 </script>
 
 <template>
+    <div class="center">
+        Latitud: <input class="coordField" type="number" id="lat" v-on:blur="UpdateLat()">
+        Longitud: <input class="coordField" type="number" id="long" v-on:blur="UpdateLong()">
+    </div>
+    <div id="mapWrapper">
+        <iframe id="map" src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d264445.6945840815!2d19.649826443093826!3d60.20684323872618!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNjDCsDEwJzQzLjAiTiAxOcKwNTQnMDguNiJF!5e0!3m2!1ssv!2s!4v1698825469918!5m2!1ssv!2s" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
     <div id="cardContainer">
-        <WeatherCard v-for="day in weatherData" :key="day" :weather-data="day"/>
-        <WeatherCard v-for="day in weatherData" :key="day" :weather-data="day"/>
         <WeatherCard v-for="day in weatherData" :key="day" :weather-data="day"/>
     </div>
 </template>
 
 <style scoped>
     #cardContainer {
-        margin-top: 1em;
-        border-top: 0.125em solid black;
-        border-bottom: 0.125em solid black;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-evenly;
-        overflow-y: auto;
-        height: 75vh;
+        background-color: red;
+        border-bottom-left-radius: 1em;
+        border-bottom-right-radius: 1em;
+    }
+
+    .coordField {
+        border: 1px solid black;
+    }
+
+    #mapWrapper {
+        position: relative;
+        height: 16em;
+        padding: 0.5em;
+        background-color: red;
+        border-top-left-radius: 1em;
+        border-top-right-radius: 1em;
+    }
+
+    #map {
+        width: 100%;
+        height: 100%;
+        border-radius: 0.5em;
     }
 </style>

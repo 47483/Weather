@@ -21,13 +21,13 @@
 <style scoped>
     #card {
         width: 10em;
-        background-color: lightblue;
+        background-color: #94d2a5;
         flex-grow: 1;
         margin: 0.5em;
         padding: 1em;
         border-radius: 0.5em;
-        border-bottom: 0.25em solid lightsteelblue;
-        border-right: 0.25em solid lightsteelblue;
+        border-top: 0.25em solid #bbe2c6;
+        border-right: 0.25em solid #bbe2c6;
     }
 
     #weatherType {
