@@ -6,28 +6,30 @@ const windPointerRotation = `rotate(${props.weatherData.winddeg}deg)`
 <template>
   <div id="card">
     <h2>{{ props.weatherData.date }}</h2>
-    <p id="weatherType">{{ props.weatherData.code }}</p>
-    <p>{{ props.weatherData.tempmin }} °C till {{ props.weatherData.tempmax }} °C</p>
-    <p>Nederbörd: {{ props.weatherData.precipitation }} mm</p>
-    <div class="flexElem" id="wind">
-      <div id="windText">Vind: {{ props.weatherData.windspeed }} m/s</div>
-      <svg
-        :style="{ transform: windPointerRotation }"
-        id="windPointer"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        stroke-width="2"
-        stroke="currentColor"
-        fill="none"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path
-          d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-4.98 3.66l-.163 .01l-.086 .016l-.142 .045l-.113 .054l-.07 .043l-.095 .071l-.058 .054l-4 4l-.083 .094a1 1 0 0 0 1.497 1.32l2.293 -2.293v5.586l.007 .117a1 1 0 0 0 1.993 -.117v-5.585l2.293 2.292l.094 .083a1 1 0 0 0 1.32 -1.497l-4 -4l-.082 -.073l-.089 -.064l-.113 -.062l-.081 -.034l-.113 -.034l-.112 -.02l-.098 -.006z"
-          stroke-width="0"
-          fill="currentColor"
-        ></path>
+    <h3 id="weatherType">{{ props.weatherData.code }}</h3>
+    <div class="flexElem">
+      <svg class="cardIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 13.5a4 4 0 1 0 4 0v-8.5a2 2 0 0 0 -4 0v8.5" />
+        <path d="M10 9l4 0" />
       </svg>
+      <p class="cardText">{{ props.weatherData.tempmin }} °C till {{ props.weatherData.tempmax }} °C</p>
+    </div>
+    <div class="flexElem">
+      <svg class="cardIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M4 12a8 8 0 0 1 16 0z" />
+        <path d="M12 12v6a2 2 0 0 0 4 0" />
+      </svg>
+      <p class="cardText">Nederbörd: {{ props.weatherData.precipitation }} mm</p>
+    </div>
+    <div class="flexElem">
+      <svg :style="{ transform: windPointerRotation }" class="cardIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+        <path d="M8 12l4 4" />
+        <path d="M12 8v8" />
+        <path d="M16 12l-4 4" />
+      </svg>
+      <div class="cardText">Vind: {{ props.weatherData.windspeed }} m/s</div>
     </div>
   </div>
 </template>
@@ -45,21 +47,18 @@ const windPointerRotation = `rotate(${props.weatherData.winddeg}deg)`
 }
 
 #weatherType {
-  margin-bottom: 0.5em;
+  text-align: left;
+  font-weight: normal;
 }
 
-#wind {
-  margin-top: 0.5em;
-}
-
-#windText {
+.cardText {
   height: fit-content;
   margin-top: auto;
   margin-bottom: auto;
-  margin-right: 0.5em;
+  margin-left: 0.5em;
 }
 
-#windPointer {
+.cardIcon {
   height: 1.5em;
 }
 </style>

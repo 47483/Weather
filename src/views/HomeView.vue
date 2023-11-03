@@ -67,6 +67,9 @@ function WeatherResponse(data) {
 
 function LocationResponse(data) {
   let dataLocation = data.features[0].properties.city;
+  if (!dataLocation) {
+    dataLocation = "någon";
+  }
   quote.value = `"När Kjell ger väder lyssnar ${dataLocation}" - Kjell Hansen`;
 }
 
