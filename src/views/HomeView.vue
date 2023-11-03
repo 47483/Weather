@@ -22,9 +22,8 @@ function Weather(code) {
   return 'Okänt väder'
 }
 
-function FetchAPI() {
-  console.log(`Fetching ${weatherAPI}`)
-  fetch(weatherAPI)
+function FetchAPI(api) {
+  fetch(api)
     .then((response) => {
       if (response.status == 200) {
         return response.json()
@@ -54,49 +53,22 @@ function FetchAPI() {
     })
 }
 
-function UpdateLat() {
-  let value = document.getElementById('lat').value
-  let prevLat = coordinates.lat
-
-  if (value != '') {
-    coordinates.lat = parseFloat(value)
-  } else {
-    coordinates.lat = 60.1786
-  }
-
-  if (prevLat != coordinates.lat) {
+function UpdateLocation(e) {
+  if (coordinates.lat != e.lat || coordinates.long != e.lng) {
+    coordinates.lat = e.lat;
+    coordinates.long = e.lng;
     weatherAPI = `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.lat}&longitude=${coordinates.long}&current=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant&windspeed_unit=ms&timezone=auto`
-    FetchAPI()
-  }
-}
-
-function UpdateLong() {
-  let value = document.getElementById('long').value
-  let prevLong = coordinates.long
-
-  if (value != '') {
-    coordinates.long = parseFloat(value)
-  } else {
-    coordinates.long = 19.9024
-  }
-
-  if (prevLong != coordinates.long) {
-    weatherAPI = `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.lat}&longitude=${coordinates.long}&current=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant&windspeed_unit=ms&timezone=auto`
-    FetchAPI()
+    FetchAPI(weatherAPI)
   }
 }
 
 onMounted(function () {
-  FetchAPI()
+  FetchAPI(weatherAPI)
 })
 </script>
 
 <template>
-  <div class="center">
-    Latitud: <input class="coordField" type="number" id="lat" v-on:blur="UpdateLat()" /> Longitud:
-    <input class="coordField" type="number" id="long" v-on:blur="UpdateLong()" />
-  </div>
-  <LocationMap />
+  <LocationMap @update-location="UpdateLocation" />
   <div id="cardContainer">
     <WeatherCard v-for="day in weatherData" :key="day" :weather-data="day" />
   </div>

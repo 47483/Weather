@@ -2,11 +2,12 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+const emit = defineEmits(["update-location"]);
 let locationMap;
 let marker;
 
 window.onload = function() {
-    locationMap = L.map('map').setView([15,15], 12);
+    locationMap = L.map('map').setView([60.1786,19.9024], 8);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(locationMap);
     UpdateMap();
     locationMap.on('click', MapMarker);
@@ -31,6 +32,7 @@ function MapMarker(e) {
   }
 
   marker = L.marker(e.latlng).addTo(locationMap);
+  emit("update-location",e.latlng);
 }
 </script>
 
