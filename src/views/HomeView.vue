@@ -5,69 +5,88 @@ import weatherCodes from '../assets/weatherCodes.js'
 import LocationMap from '../components/LocationMap.vue'
 
 const weatherData = ref([])
+const location = ref("ingenstans");
 
 const weekday = ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag']
 const coordinates = {
   lat: 60.1786,
   long: 19.9024
 }
-let weatherAPI = `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.lat}&longitude=${coordinates.long}&current=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant&windspeed_unit=ms&timezone=auto`
+let weatherAPI = `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.lat}&longitude=${coordinates.long}&current=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant&windspeed_unit=ms&timezone=auto`;
+let locationAPI = `https://api.geoapify.com/v1/geocode/reverse?lat=${coordinates.lat}&lon=${coordinates.long}&apiKey=84a7743e967f4a4aad190a95d33d5a0a`;
 
 function Weather(code) {
-  let weather = weatherCodes.find((item) => item.code == code)
+  let weather = weatherCodes.find((item) => item.code == code);
   if (weather) {
-    return weather.text
+    return weather.text;
   }
 
-  return 'Okänt väder'
+  return 'Okänt väder';
 }
 
-function FetchAPI(api) {
+function FetchAPI(api, method) {
   fetch(api)
     .then((response) => {
       if (response.status == 200) {
-        return response.json()
+        return response.json();
       }
     })
 
     .then((data) => {
       if (data.length === 0) {
-        throw 'Ingen data returnerades'
+        throw 'Ingen data returnerades';
       }
 
-      weatherData.value = []
+      if (method == 'weather') {
+        WeatherResponse(data);
 
-      for (let day in data.daily.time) {
-        let date = new Date(data.daily.time[day])
-        let weather = {
-          date: `${weekday[date.getDay()]} ${date.getDate()}.${date.getMonth() + 1}`,
-          code: Weather(data.daily.weathercode[day]),
-          tempmax: data.daily.temperature_2m_max[day],
-          tempmin: data.daily.temperature_2m_min[day],
-          winddeg: data.daily.winddirection_10m_dominant[day],
-          windspeed: data.daily.windspeed_10m_max[day],
-          precipitation: data.daily.precipitation_sum[day]
-        }
-        weatherData.value.push(weather)
+      } else if (method == 'location') {
+        LocationResponse(data);
       }
     })
+}
+
+function WeatherResponse(data) {
+  weatherData.value = [];
+
+  for (let day in data.daily.time) {
+    let date = new Date(data.daily.time[day])
+    let weather = {
+      date: `${weekday[date.getDay()]} ${date.getDate()}.${date.getMonth() + 1}`,
+      code: Weather(data.daily.weathercode[day]),
+      tempmax: data.daily.temperature_2m_max[day],
+      tempmin: data.daily.temperature_2m_min[day],
+      winddeg: data.daily.winddirection_10m_dominant[day],
+      windspeed: data.daily.windspeed_10m_max[day],
+      precipitation: data.daily.precipitation_sum[day]
+    }
+    weatherData.value.push(weather);
+  }
+}
+
+function LocationResponse(data) {
+  console.log(data);
 }
 
 function UpdateLocation(e) {
   if (coordinates.lat != e.lat || coordinates.long != e.lng) {
     coordinates.lat = e.lat;
     coordinates.long = e.lng;
-    weatherAPI = `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.lat}&longitude=${coordinates.long}&current=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant&windspeed_unit=ms&timezone=auto`
-    FetchAPI(weatherAPI)
+    weatherAPI = `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.lat}&longitude=${coordinates.long}&current=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant&windspeed_unit=ms&timezone=auto`;
+    FetchAPI(weatherAPI,'weather');
+    locationAPI = `https://api.geoapify.com/v1/geocode/reverse?lat=${coordinates.lat}&lon=${coordinates.long}&apiKey=84a7743e967f4a4aad190a95d33d5a0a`;
+    FetchAPI(locationAPI,'location');
   }
 }
 
 onMounted(function () {
-  FetchAPI(weatherAPI)
+  FetchAPI(weatherAPI,'weather');
+  FetchAPI(locationAPI,'location');
 })
 </script>
 
 <template>
+  <p class="center">"När Kjell ger väder lyssnar man" - Kjell Hansen</p>
   <LocationMap @update-location="UpdateLocation" />
   <div id="cardContainer">
     <WeatherCard v-for="day in weatherData" :key="day" :weather-data="day" />
