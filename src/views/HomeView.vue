@@ -3,9 +3,10 @@ import { onMounted, ref } from 'vue'
 import WeatherCard from '../components/WeatherCard.vue'
 import weatherCodes from '../assets/weatherCodes.js'
 import LocationMap from '../components/LocationMap.vue'
+import MotivationalQuote from '../components/MotivationalQuote.vue';
 
 const weatherData = ref([])
-const location = ref("ingenstans");
+const quote = ref('"När Kjell ger väder lyssnar man" - Kjell Hansen');
 
 const weekday = ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag']
 const coordinates = {
@@ -65,7 +66,8 @@ function WeatherResponse(data) {
 }
 
 function LocationResponse(data) {
-  console.log(data);
+  let dataLocation = data.features[0].properties.city;
+  quote.value = `"När Kjell ger väder lyssnar ${dataLocation}" - Kjell Hansen`;
 }
 
 function UpdateLocation(e) {
@@ -86,7 +88,7 @@ onMounted(function () {
 </script>
 
 <template>
-  <p class="center">"När Kjell ger väder lyssnar man" - Kjell Hansen</p>
+  <MotivationalQuote :quote="quote" />
   <LocationMap @update-location="UpdateLocation" />
   <div id="cardContainer">
     <WeatherCard v-for="day in weatherData" :key="day" :weather-data="day" />
