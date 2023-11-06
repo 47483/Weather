@@ -1,7 +1,9 @@
 <script setup>
+//Preforming necessary imports
 import { ref } from 'vue';
 import weatherCodes from '../assets/weatherCodes.js'
 
+//A function for retrieving the associated image with the weather
 function WeatherImg(code) {
   let weather = weatherCodes.find((item) => item.code == code);
   if (weather) {
@@ -11,6 +13,7 @@ function WeatherImg(code) {
   return 'undefined.svg';
 }
 
+//Defining some constants used for dynamic styling and imagery
 const props = defineProps(['weatherData']);
 const windPointerRotation = `rotate(${props.weatherData.winddeg}deg)`;
 const imageSrc = ref('src/assets/images/'+WeatherImg(props.weatherData.code));

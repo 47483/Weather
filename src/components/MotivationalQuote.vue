@@ -1,4 +1,5 @@
 <script setup>
+    //Defining a prop to get a quote from
     const props = defineProps(['quote']);
 </script>
 

@@ -1,3 +1,4 @@
+//List of all weathercodes from the open-meteo api
 const weatherCodes = [
   { code: 0, text: 'Klar himmel', image: 'sunhigh.svg' },
   { code: 1, text: 'Huvudsakligen klart', image: 'sun.svg' },

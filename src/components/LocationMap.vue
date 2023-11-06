@@ -1,11 +1,15 @@
 <script setup>
+//Necessary leaflet imports
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+//Defining emits for updating the location
 const emit = defineEmits(["update-location"]);
+//Defining map and markers
 let locationMap;
 let marker;
 
+//Create a dynamic and interactable map using element 'map' on load
 window.onload = function() {
     locationMap = L.map('map').setView([60.1786,19.9024], 8);
 
@@ -21,6 +25,7 @@ window.onload = function() {
     }
 }
 
+//A function for updating the map size
 function UpdateMap() {
   let mapRef = document.getElementById("map");
   let mapWrapRef = document.getElementById("mapWrapper");
@@ -30,6 +35,7 @@ function UpdateMap() {
   locationMap.invalidateSize();
 }
 
+//A function for changing the map marker, and emitting update
 function MapMarker(e) {
   if (marker) {
     locationMap.removeLayer(marker);
