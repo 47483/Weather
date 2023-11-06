@@ -2,6 +2,7 @@
 
 ## Ändringar
 
+Designade om sidan
 Formaterade datum
 Lade till text i stället för väderkoder
 Lade till ikoner för informationsparametrar
