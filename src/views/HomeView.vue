@@ -54,7 +54,8 @@ function WeatherResponse(data) {
     let date = new Date(data.daily.time[day])
     let weather = {
       date: `${weekday[date.getDay()]} ${date.getDate()}.${date.getMonth() + 1}`,
-      code: Weather(data.daily.weathercode[day]),
+      weather: Weather(data.daily.weathercode[day]),
+      code: data.daily.weathercode[day],
       tempmax: data.daily.temperature_2m_max[day],
       tempmin: data.daily.temperature_2m_min[day],
       winddeg: data.daily.winddirection_10m_dominant[day],

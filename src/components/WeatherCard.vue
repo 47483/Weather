@@ -1,12 +1,26 @@
 <script setup>
-const props = defineProps(['weatherData'])
-const windPointerRotation = `rotate(${props.weatherData.winddeg}deg)`
+import { ref } from 'vue';
+import weatherCodes from '../assets/weatherCodes.js'
+
+function WeatherImg(code) {
+  let weather = weatherCodes.find((item) => item.code == code);
+  if (weather) {
+    return weather.image;
+  }
+
+  return 'undefined.svg';
+}
+
+const props = defineProps(['weatherData']);
+const windPointerRotation = `rotate(${props.weatherData.winddeg}deg)`;
+const imageSrc = ref('src/assets/images/'+WeatherImg(props.weatherData.code));
 </script>
 
 <template>
   <div id="card">
+    <img :src="imageSrc" class="weatherImg">
     <h2>{{ props.weatherData.date }}</h2>
-    <h3 id="weatherType">{{ props.weatherData.code }}</h3>
+    <h3 id="weatherType">{{ props.weatherData.weather }}</h3>
     <div class="flexElem">
       <svg class="cardIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <path d="M10 13.5a4 4 0 1 0 4 0v-8.5a2 2 0 0 0 -4 0v8.5" />
@@ -36,14 +50,17 @@ const windPointerRotation = `rotate(${props.weatherData.winddeg}deg)`
 
 <style scoped>
 #card {
+  position: relative;
   width: 10em;
-  background-color: #94d2a5;
+  background-color: #cdebb0;
   flex-grow: 1;
   margin: 0.5em;
   padding: 1em;
   border-radius: 0.5em;
-  border-top: 0.25em solid #bbe2c6;
-  border-right: 0.25em solid #bbe2c6;
+  border-top: 0.25em solid #f2efe9;
+  border-right: 0.25em solid #f2efe9;
+  border-left: 0.25em solid #add19e;
+  border-bottom: 0.25em solid #add19e;
 }
 
 #weatherType {
@@ -60,5 +77,12 @@ const windPointerRotation = `rotate(${props.weatherData.winddeg}deg)`
 
 .cardIcon {
   height: 1.5em;
+}
+
+.weatherImg {
+  position: absolute;
+  width: 2em;
+  right: 1em;
+  bottom: 1em;
 }
 </style>

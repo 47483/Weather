@@ -8,7 +8,10 @@ let marker;
 
 window.onload = function() {
     locationMap = L.map('map').setView([60.1786,19.9024], 8);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(locationMap);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    }).addTo(locationMap);
+
     UpdateMap();
     marker = L.marker({'lat':60.1786,'lng':19.9024}).addTo(locationMap);
     locationMap.on('click', MapMarker);
