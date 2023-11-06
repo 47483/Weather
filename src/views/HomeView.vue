@@ -95,7 +95,7 @@ function UpdateLocation(e) {
   }
 }
 
-//A function that will call automatically on initial page load
+//A function that will call automatically on initial page load.
 onMounted(function () {
   FetchAPI(weatherAPI,'weather');
   FetchAPI(locationAPI,'location');

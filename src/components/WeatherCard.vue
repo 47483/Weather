@@ -16,7 +16,7 @@ function WeatherImg(code) {
 //Defining some constants used for dynamic styling and imagery
 const props = defineProps(['weatherData']);
 const windPointerRotation = `rotate(${props.weatherData.winddeg}deg)`;
-const imageSrc = ref('src/assets/images/'+WeatherImg(props.weatherData.code));
+const imageSrc = ref('assets/images/'+WeatherImg(props.weatherData.code));
 </script>
 
 <template>
@@ -55,15 +55,15 @@ const imageSrc = ref('src/assets/images/'+WeatherImg(props.weatherData.code));
 #card {
   position: relative;
   width: 10em;
-  background-color: #cdebb0;
+  background-color: hsl(194,45%,77%);
   flex-grow: 1;
   margin: 0.5em;
   padding: 1em;
   border-radius: 0.5em;
-  border-top: 0.25em solid #f2efe9;
-  border-right: 0.25em solid #f2efe9;
-  border-left: 0.25em solid #add19e;
-  border-bottom: 0.25em solid #add19e;
+  border-top: 0.25em solid hsl(194,45%,87%);
+  border-right: 0.25em solid hsl(194,45%,87%);
+  border-left: 0.25em solid hsl(194,45%,67%);
+  border-bottom: 0.25em solid hsl(194,45%,67%);
 }
 
 #weatherType {
